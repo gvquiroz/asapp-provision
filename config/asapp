@@ -19,8 +19,13 @@ server {
 
     ssl_session_timeout 5m;
 
+    # used to limit connections to include only the strong versions and ciphers of SSL/TLS
     ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+
+    # Tell client which ciphers are available. Referenced from https://gist.github.com/gavinhungry/7a67174c18085f4a23eb
+    ssl_ciphers EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA512:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:ECDH+AESGCM:ECDH+AES256:DH+AESGCM:DH+AES256:RSA+AESGCM:!aNULL:!eNULL:!LOW:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS;
+
+    # tell clients that we have a preferred list of ciphers that we want to use
     ssl_prefer_server_ciphers on;
 
     location / {

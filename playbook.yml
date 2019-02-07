@@ -14,10 +14,6 @@
       yum: name=runit-2.1.2-1.el6 state=present
     - name: install nginx
       yum: name=nginx-1.10.2-1.el6 state=present
-    - name: start nginx
-      service:
-          name: nginx
-          state: started
     - name: Copy nginx.conf base configuration
       copy:
         src: config/nginx.conf
@@ -42,10 +38,6 @@
       file:
         path: /etc/nginx/conf.d/default.conf
         state: absent
-    - name: Restart nginx
-      service:
-        name: nginx
-        state: restarted
     - name: Copy application
       copy:
         src: application
@@ -57,6 +49,10 @@
         src: "/opt/application"
         dest: "/etc/service/application"
         state: link
+    - name: start nginx
+      service:
+          name: nginx
+          state: started
     - name: Wait until runit detects and starts the application
       wait_for:
         path: /etc/service/application/supervise/pid
