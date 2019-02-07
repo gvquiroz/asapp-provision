@@ -8,11 +8,12 @@
           url: https://packagecloud.io/install/repositories/imeyer/runit/script.rpm.sh
           dest: /tmp/script.rpm.sh
     - name: add runit package to yum
-      shell: sudo bash /tmp/script.rpm.sh
-    - name: install runit using yum
-      yum: name=runit state=latest
-    - name: ensure nginx is at the latest version
-      yum: name=nginx state=latest
+      shell: bash /tmp/script.rpm.sh
+      become: yes
+    - name: install runit
+      yum: name=runit-2.1.2-1.el6 state=present
+    - name: install nginx
+      yum: name=nginx-1.10.2-1.el6 state=present
     - name: start nginx
       service:
           name: nginx
@@ -37,7 +38,7 @@
       copy:
         src: files/self-signed.key
         dest: /etc/ssl/private/asapp.key
-    - name: Clean artifact path
+    - name: Clean default configurations
       file:
         path: /etc/nginx/conf.d/default.conf
         state: absent
@@ -50,7 +51,7 @@
         src: application
         dest: /opt
     - name: Give run permissons to execute 
-      shell: sudo chmod +x /opt/application/run
+      file: dest=/opt/application/run mode=a+x
     - name: Runit run symbolic link 
       file:
         src: "/opt/application"
